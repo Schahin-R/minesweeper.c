@@ -3,7 +3,7 @@
 #include<stdbool.h>
 #include<time.h>
 #include<math.h>
-#include<unistd.h>
+#include <argp.h>
 
 #include"minesweeper.h"
 
@@ -12,19 +12,37 @@
 int main(int argc, char **argv)
 {
 
+  Minesweeper MSW;
 
-  do {
+  int Rows, Columns, Mines;
 
-  }
+  //CommandLineOptions(argc, argv);
+
   PrintHeader();
 
-  PrintLine();
+  //printf("Choose a Number of Columns: ");
+  //scanf("%d", &Columns);
+  //printf("Choose a Number of Rows: ");
+  //scanf("%d", &Rows);
+  //printf("Choose a Number of Mines: ");
+  scanf("%d", &Mines);
+  printf("\n");
 
-  PrintGrid();
+  MSW.nRows = Rows;
+  MSW.nCols = Columns;
+  MSW.nMines = Mines;
 
-  printf("argc: %d\n", argc);
+  //PrintGrid(&MSW);
 
-  DrawRandomNumberBetweenZeroAnd();
+  PutMinesOnBoard(&MSW);
+
+
+
+
+
+  DrawRandomNumberBetweenZeroAnd(10);
+  //printf("\nargc: %d\n", argc);
+
 
   return 0 ;
 
