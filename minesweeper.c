@@ -14,33 +14,31 @@ int main(int argc, char **argv)
 
   Minesweeper MSW;
 
-  int Rows, Columns, Mines;
 
   //CommandLineOptions(argc, argv);
 
-  PrintHeader();
 
-  //printf("Choose a Number of Columns: ");
-  //scanf("%d", &Columns);
-  //printf("Choose a Number of Rows: ");
-  //scanf("%d", &Rows);
-  //printf("Choose a Number of Mines: ");
-  scanf("%d", &Mines);
+  printf("Choose a Number of Columns: ");
+  scanf("%hu", &MSW.nRows);
+  printf("Choose a Number of Rows: ");
+  scanf("%hu", &MSW.nCols);
+  printf("Choose a Number of Mines: ");
+  scanf("%hu", &MSW.nMines);
   printf("\n");
 
-  MSW.nRows = Rows;
-  MSW.nCols = Columns;
-  MSW.nMines = Mines;
-
-  //PrintGrid(&MSW);
-
-  PutMinesOnBoard(&MSW);
 
 
+  InitMinesweeper(&MSW);
+
+
+  do {
+    RevealTile(&MSW);
+  } while(RevealTile(&MSW) == true);
 
 
 
-  DrawRandomNumberBetweenZeroAnd(10);
+
+
   //printf("\nargc: %d\n", argc);
 
 

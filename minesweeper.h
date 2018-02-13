@@ -1,17 +1,14 @@
-const char *argp_program_version =
-"Minesweeper_0.01";
-const char *argp_program_bug_address =
-"<admin@minesweeper.c>";
+const char *argp_program_version = "Minesweeper_0.01";
+const char *argp_program_bug_address ="<admin@minesweeper.c>";
 
 
 typedef struct Minesweeper{
 unsigned short int nRows;
 unsigned short int nCols;
 unsigned short int nMines;
-unsigned short int ** mask;
-unsigned short int ** board;
+unsigned short int **mask;
+unsigned short int **board;
 } Minesweeper;
-
 
 // Printing tools
 void PrintHeader(/* ... */){
@@ -27,49 +24,16 @@ void PrintLine(Minesweeper *msw){
   }
   printf("\n");
 };
-void SetStringToBePrint( /* ... */ );
 
-void PrintGrid(Minesweeper *msw){
+void PrintGrid(Minesweeper *msw, unsigned short int *A[]){
 
-  int i, j, x;
+  {
 
-  //Obere Koordinaten
-  printf("    ");
-  for(x = 0; x<msw->nCols; x++){
-    if (x<10) {
-      printf(" %d  ", x);
-    }
-    else {
-      printf("%d  ", x);
-    }
+    int i, j, x;
 
-  };
-  printf("\n");
-  PrintLine(msw);
+    //msw->mask[i][j] = 0;
 
-  // Schleife fuer Zeilen, Y-Achse
-  for(i=0; i<msw->nRows; i++) {
-    if (i<10) {
-
-      printf("%d  ", i); //Linke Koordinaten
-
-    }
-    else {
-
-      printf("%d ", i); //Linke Koordinaten, falls i>=10
-
-    }
-     // Schleife fuer Spalten, X-Achse
-      for(j=0; j<msw->nCols; j++) {
-        printf("| %c ", 64);   //@ im Grid
-         }
-          printf("|  %d\n", i); //Rechte Koordinaten
-          PrintLine(msw);
-
-              //PrintLine();
-        }
-
-    //Untere Koordinaten
+    //Obere Koordinaten(Upper Coordinates)
     printf("    ");
     for(x = 0; x<msw->nCols; x++){
       if (x<10) {
@@ -81,71 +45,286 @@ void PrintGrid(Minesweeper *msw){
 
     };
     printf("\n");
+    PrintLine(msw);
+
+    // Schleife fuer Zeilen, Y-Achse
+    for(i=0; i<msw->nRows; i++) {
+      if (i<10) {
+
+        printf("%d  ", i); //Linke Koordinaten(Left Coordinates)
+
+      }
+      else {
+
+        printf("%d ", i); //Linke Koordinaten, falls i>=10
+
+      }
+       // Schleife fuer Spalten, X-Achse
+        for(j=0; j<msw->nCols; j++) {
+          printf("| %c ", A[i][j]);   //@ im Grid
+           }
+            printf("|  %d\n", i); //Rechte Koordinaten(Right Coordinates)
+            PrintLine(msw);
+
+                //PrintLine();
+          }
+
+      //Untere Koordinaten(Lower Coordinates)
+      printf("    ");
+      for(x = 0; x<msw->nCols; x++){
+        if (x<10) {
+          printf(" %d  ", x);
+        }
+        else {
+          printf("%d  ", x);
+        }
+
+      };
+      printf("\n");
+
+
+  };
+
+
 };
 
-void YouLost(void);
-void YouWon(void);
+
+void SetStringToBePrint( /* ... */ );
+void YouLost(void){
+  printf("\nCiao! You lost the Game!\n");
+};
+void YouWon(void){
+  printf("\nNice! You won the Game!\n");
+};
 
 // Setup Minesweeper
 Minesweeper ResetMinesweeper(void);
-void AllocateMemory(/*Minesweeper *msw*/){
+void AllocateMemory(Minesweeper *msw){
 
+    int t;
+
+// Zunaechst ein N-elementiges eindimsionales Array von usigned short int *-Werten ...
+
+    if((msw->board = (unsigned short int**)malloc((msw->nRows)*sizeof(unsigned short int *))) == NULL)
+    {
+      printf("Fehler: malloc fehlgeschlagen!\n");
+      exit(0);
+    }
+// ... dann fuer jeden dieser Zeiger ein weiteres N-elementiges
+// eindimsionales Array von double-Werten.
+    for(t = 0; t < msw->nCols; t++)
+    {
+  // !!!!! hier sind die Klammern um (msw->board) == *board essentiell !!!!!
+      if(((msw->board)[t] = (unsigned short int *)malloc((msw->nCols)*sizeof(unsigned short int*))) == NULL)
+        {
+          printf("Fehler: malloc fehlgeschlagen!\n");
+          exit(0);
+        }
+    }
+
+
+    if((msw->mask = (unsigned short int**)malloc((msw->nRows)*sizeof(unsigned short int *))) == NULL)
+    {
+      printf("Fehler: malloc fehlgeschlagen!\n");
+      exit(0);
+    }
+
+    for(t = 0; t < msw->nCols; t++)
+    {
+      if(((msw->mask)[t] = (unsigned short int *)malloc((msw->nCols)*sizeof(unsigned short int*))) == NULL)
+        {
+            printf("Fehler: malloc fehlgeschlagen!\n");
+            exit(0);
+        }
+    }
 };
+
 void FreeMemory(Minesweeper *msw ){
   free(msw);
+  msw = NULL;
 };
+
 unsigned short int DrawRandomNumberBetweenZeroAnd(int X){
   int number;
 
 		/* initialize random seed: */
-		srand(time(NULL));
+		//srand(time(NULL));
 		/* Generate a random number: 0 - x  (%x + 1) */
-		number = rand() % x;
+		number = rand() % X;
     //printf("%d\n", number);
+    return number;
 };
-bool IsSiteInsideTheGrid( /* ... */ );
-void PutMinesOnBoard(Minesweeper *msw){
-    int x, y;
 
-for(int i = 0; i <msw->nMines; i++){
-     // the square is N x N, so you want two numbers from 0 to N-1
-     x = DrawRandomNumberBetweenZeroAnd(1);
-     y = DrawRandomNumberBetweenZeroAnd(1);
-
-    printf("x: %d, y: %d\n", x, y);
- }
+bool IsSiteInsideTheGrid(Minesweeper *msw, int x, int y){
+  if(x>=msw->nRows || y>=msw->nCols){
+    printf("The Coordinates are outside the Game!");
+    return false;
+  }
 };
+
+
 void FillBoardWhithMineAdjacentNumbers( /* ... */ );
+
 void InitBoard(Minesweeper *msw){
 
+  //AllocateMemory(msw);
 
-
-  int Grid[msw->nCols][msw->nRows] = {};
-  //board[msw->nRows][msw->nCols]
   int x, y;
-  int A[20][20]= {0};
-  for(x=0; x<20; x++){
-    for(y=0; y<20; y++){
-      printf("%d", A[x][y]);
+
+  for(x=0; x<msw->nRows; x++){
+    for(y=0; y<msw->nCols; y++){
+     msw->board[x][y] = 32;
     }
-    printf("\n");
+    //printf("\n");
   };
 
+  //PrintGrid(msw, msw->board);
 };
-void InitMask( /* ... */ );
-void InitMinesweeper( /* ... */ );
+
+
+void PutMinesOnBoard(Minesweeper *msw){
+
+    int x, y;
+
+    srand(time(NULL));
+
+for(int i = 0; i<msw->nMines; i++){
+
+  // Generate Random Coordinates (Mines) for the Board
+  x = DrawRandomNumberBetweenZeroAnd(msw->nRows);
+
+  y = DrawRandomNumberBetweenZeroAnd(msw->nCols);
+
+
+    //if(msw->board[x][y] = 0){
+
+      msw->board[x][y] = 42;
+
+    //}
+
+   //printf("x: %d, y: %d\n", x, y);
+
+  }
+
+ //int h, f;
+
+ //for(h=0; h<msw->nRows; h++){
+   //for(f=0; f<msw->nCols; f++){
+    //printf("%c", msw->board[h][f]);
+  // }
+  // printf("\n");
+ //};
+
+ //PrintGrid(msw, msw->board);
+
+};
+
+
+void InitMask(Minesweeper *msw){
+
+
+    AllocateMemory(msw);
+
+    int i, j;
+
+    for(i=0; i<msw->nRows; i++){
+      for(j=0; j<msw->nCols; j++){
+      msw->mask[i][j] = 64;
+      }
+      //printf("\n");
+    };
+    //msw->mask[i][j] = 64;
+    //PrintGrid(msw, msw->mask);
+
+    printf("\n");
+
+    //msw->mask[0][5] = 32;
+
+
+    //for(i=0; i<msw->nRows; i++){
+      //for(j=0; j<msw->nCols; j++){
+       //printf("%c", msw->mask[i][j]);
+      //}
+      //printf("\n");
+    //};
+
+  PrintGrid(msw, msw->mask);
+
+
+};
+void InitMinesweeper(Minesweeper *msw){
+  PrintHeader();
+  //AllocateMemory(msw);
+  InitMask(msw);
+  InitBoard(msw);
+  PutMinesOnBoard(msw);
+};
 
 // Revealing tools
-void RevealTilesFromEmptyOneOpeningFullSpace( /* ... */ );
-bool RevealAdjacentTilesOfRevealedTile( /* ... */ );
-bool RevealTile( /* ... */ );
-void RevealMinesInMask( /* ... */ );
+unsigned short int GetPosition(int i, int j, Minesweeper *msw){
+
+ return i*(msw->nRows)+j;
+
+};
+
+void Floodfill(Minesweeper *msw, int x, int y) //RevealTilesFromEmptyOneOpeningFullSpace
+{
+    if(msw->mask[x][y] == msw->board[x][y])
+    {
+      int k, s;
+      for(k = x-1; k<msw->nRows; k++)
+        for(s = y-1; s<msw->nCols; s++){
+          msw->mask[x][y] = msw->board[x][y];
+        }
+        //putpixel(x,y,newcolor);
+        //floodFill(x+1,y,oldcolor,newcolor);
+        //floodFill(x,y+1,oldcolor,newcolor);
+        //floodFill(x-1,y,oldcolor,newcolor);
+        //floodFill(x,y-1,oldcolor,newcolor);
+    }
+};
+
+//bool RevealAdjacentTilesOfRevealedTile( /* ... */ );
+bool RevealTile(Minesweeper *msw){
+
+  int x, y;
+
+  printf("\nChoose X,Y - Coordinates: ");
+  scanf("%d %d", &x, &y);
+  if (IsSiteInsideTheGrid(msw, x, y) == true) {
+    if(msw->board[x][y] == 42){
+      PrintGrid(msw, msw->board);
+      YouLost();
+      return false;
+    }
+    else {
+      msw->mask[x][y] = msw->board[x][y];
+      PrintGrid(msw, msw->mask);
+
+    }
+  }
+  //printf("%d\n", GetPosition(x,y, msw));
+
+  else{
+    printf("Try other Coordinates in the Field!");
+    return true;
+  }
+
+
+
+
+};
+void RevealMinesInMask(Minesweeper *msw){
+  PrintGrid(msw, msw->board);
+};
 
 // Additional player actions
 bool ArmTile( /* ... */ );
 bool DisarmTile( /* ... */ );
 void PrintInGameHelp( /* ... */ );
-void QuitGame( /* ... */ );
+void QuitGame( /* ... */ ){
+
+};
 bool MakeAction( /* ... */ );
 
 // Handling user input
