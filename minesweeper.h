@@ -61,7 +61,7 @@ void PrintGrid(Minesweeper *msw, unsigned short int *A[]){
       }
        // Schleife fuer Spalten, X-Achse
         for(j=0; j<msw->nCols; j++) {
-          printf("| %c ", A[i][j]);   //@ im Grid
+          printf("| %c ", A[i][j]);   //Grid-Ausgabe
            }
             printf("|  %d\n", i); //Rechte Koordinaten(Right Coordinates)
             PrintLine(msw);
@@ -156,14 +156,11 @@ unsigned short int DrawRandomNumberBetweenZeroAnd(int X){
 };
 
 bool IsSiteInsideTheGrid(Minesweeper *msw, int x, int y){
-  if(x>=msw->nRows || y>=msw->nCols){
-    printf("The Coordinates are outside the Game!");
+  if(x>=msw->nRows || y>=msw->nCols || x<0 || y<0){
     return false;
   }
 };
 
-
-void FillBoardWhithMineAdjacentNumbers( /* ... */ );
 
 void InitBoard(Minesweeper *msw){
 
@@ -173,7 +170,7 @@ void InitBoard(Minesweeper *msw){
 
   for(x=0; x<msw->nRows; x++){
     for(y=0; y<msw->nCols; y++){
-     msw->board[x][y] = 32;
+     msw->board[x][y] = 48;
     }
     //printf("\n");
   };
@@ -185,37 +182,51 @@ void InitBoard(Minesweeper *msw){
 void PutMinesOnBoard(Minesweeper *msw){
 
     int x, y;
+    int z = msw->nMines;
 
     srand(time(NULL));
 
-for(int i = 0; i<msw->nMines; i++){
-
+for(int i = 0; i<z;){
   // Generate Random Coordinates (Mines) for the Board
   x = DrawRandomNumberBetweenZeroAnd(msw->nRows);
 
   y = DrawRandomNumberBetweenZeroAnd(msw->nCols);
 
 
-    //if(msw->board[x][y] = 0){
+  if (msw->board[x][y] != 42) {  // make shure there are z diffrent mines
+    msw->board[x][y] = 42;
+    //  printf("x: %d, y: %d\n", x, y);
+    i++;
+    }
+}
+};
 
-      msw->board[x][y] = 42;
 
-    //}
+void FillBoardWhithMineAdjacentNumbers(Minesweeper *msw){
 
-   //printf("x: %d, y: %d\n", x, y);
+  int i, j, x, y;
 
+  //int Count;
+
+  for (i=0; i<msw->nRows; i++){
+    for(j=0; j<msw->nCols; j++){
+      if (msw->board[i][j] == 42) {
+        //printf("Bombe gefunden! ")
+
+          for(x=i-1; x<=i+1; x++){
+            for(y=j-1; y<=j+1; y++){
+              if(IsSiteInsideTheGrid(msw, x,y) == true && msw->board[x][y] != 42) {
+                //printf("Found neighbour!")
+                msw->board[x][y]++;
+
+              }
+            }
+          }
+
+      }
+    }
   }
-
- //int h, f;
-
- //for(h=0; h<msw->nRows; h++){
-   //for(f=0; f<msw->nCols; f++){
-    //printf("%c", msw->board[h][f]);
-  // }
-  // printf("\n");
- //};
-
- //PrintGrid(msw, msw->board);
+  //PrintGrid(msw, msw->board);
 
 };
 
@@ -258,6 +269,7 @@ void InitMinesweeper(Minesweeper *msw){
   InitMask(msw);
   InitBoard(msw);
   PutMinesOnBoard(msw);
+  FillBoardWhithMineAdjacentNumbers(msw);
 };
 
 // Revealing tools
@@ -306,7 +318,8 @@ bool RevealTile(Minesweeper *msw){
   //printf("%d\n", GetPosition(x,y, msw));
 
   else{
-    printf("Try other Coordinates in the Field!");
+    printf("Try other Coordinates in the Field! ");
+    printf("The Coordinates are outside the Game!");
     return true;
   }
 

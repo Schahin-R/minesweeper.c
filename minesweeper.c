@@ -30,10 +30,11 @@ int main(int argc, char **argv)
 
   InitMinesweeper(&MSW);
 
-
+  bool outcome;
+  
   do {
-    RevealTile(&MSW);
-  } while(RevealTile(&MSW) == true);
+    outcome = RevealTile(&MSW);
+  } while(outcome == true);
 
 
 
