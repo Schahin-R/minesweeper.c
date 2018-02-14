@@ -185,38 +185,23 @@ void InitBoard(Minesweeper *msw){
 void PutMinesOnBoard(Minesweeper *msw){
 
     int x, y;
+    int z = msw->nMines;
 
     srand(time(NULL));
 
-for(int i = 0; i<msw->nMines; i++){
-
+for(int i = 0; i<z;){
   // Generate Random Coordinates (Mines) for the Board
   x = DrawRandomNumberBetweenZeroAnd(msw->nRows);
 
   y = DrawRandomNumberBetweenZeroAnd(msw->nCols);
 
 
-    //if(msw->board[x][y] = 0){
-
-      msw->board[x][y] = 42;
-
-    //}
-
-   //printf("x: %d, y: %d\n", x, y);
-
-  }
-
- //int h, f;
-
- //for(h=0; h<msw->nRows; h++){
-   //for(f=0; f<msw->nCols; f++){
-    //printf("%c", msw->board[h][f]);
-  // }
-  // printf("\n");
- //};
-
- //PrintGrid(msw, msw->board);
-
+  if (msw->board[x][y] != 42) {  // make shure there are z diffrent mines
+    msw->board[x][y] = 42;
+    //  printf("x: %d, y: %d\n", x, y);
+    i++;
+    }
+}
 };
 
 
